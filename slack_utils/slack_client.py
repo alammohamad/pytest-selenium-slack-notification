@@ -22,7 +22,7 @@
 #
 # def load_webhook():
 #     # First, try env variable
-# 
+#
 #     if webhook:
 #         return webhook
 #
@@ -44,12 +44,10 @@ def load_webhook():
     path = Path("config/settings.yaml")
     with path.open() as f:
         data = yaml.safe_load(f)
-
     return data.get("slack_webhook", "REPLACE_ME")
 
 def send_slack_message(message):
     webhook = load_webhook()
     payload = {"text": message}
-    print(f"Sending Slack message: {message}")
     response = requests.post(webhook, json=payload)
-    print(f"Response status: {response.status_code}, {response.text}")
+    print(f"Slack response: {response.status_code}")
