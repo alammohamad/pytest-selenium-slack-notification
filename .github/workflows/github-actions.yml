@@ -1,0 +1,42 @@
+name: Selenium Test Pipeline
+
+on:
+  push:
+    branches: [ main ]
+
+    #Every time you commit and git push origin main
+    #GitHub automatically runs the steps in your workflow
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        ##Checkout repo, This clones your latest code into a clean environment.
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          ### Set up Python, Simulates the environment where your tests will run.Fresh OS, fresh Python, no leftover dependencies → exactly like a real CI/CD.
+
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run Tests
+        run: |
+          pytest || echo "FAILED" > teststatus.txt
+##Runs your Selenium/Pytest tests exactly as they would in a company pipeline.
+##If a test fails, a small file teststatus.txt is created to signal failure.
+
+      - name: Set Slack Webhook
+        run: echo "SLACK_WEBHOOK_URL=${{ secrets.SLACK_WEBHOOK_URL }}" >> $GITHUB_ENV
+        ##run:    
+          if [ -f teststatus.txt ]; then
+            python slack_notify.py failed
+          else
+            python slack_notify.py passed
+          fi

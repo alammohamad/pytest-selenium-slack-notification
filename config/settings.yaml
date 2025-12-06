@@ -1,0 +1,3 @@
+slack_webhook: ""
+browser: "chrome"
+base_url: "https://www.google.com"
